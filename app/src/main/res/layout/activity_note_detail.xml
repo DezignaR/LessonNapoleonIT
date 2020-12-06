@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".NoteDetailActivity">
+
+    <Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="@dimen/match_constraints"
+        android:layout_height="@dimen/toolbar_height"
+        android:title="Новая заметка"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etTitleNote"
+        android:layout_width="@dimen/match_constraints"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:hint="Заголовок"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <EditText
+        android:id="@+id/etDescription"
+        android:layout_width="@dimen/match_constraints"
+        android:layout_height="@dimen/match_constraints"
+        android:layout_margin="16dp"
+        android:background="@color/white"
+        android:gravity="top"
+        android:hint="Введите текст"
+        app:layout_constraintBottom_toTopOf="@+id/ivAddNote"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etTitleNote" />
+
+    <ImageView
+        android:id="@+id/ivAddNote"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_add_note"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
