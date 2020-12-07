@@ -15,7 +15,7 @@ class NoteActivity : AppCompatActivity() {
         const val DETAIL_ACTIVITY_REQUEST_CODE = 1
     }
 
-    lateinit var note: NoteClass
+    lateinit var note: Note
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,13 +35,13 @@ class NoteActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == DETAIL_ACTIVITY_REQUEST_CODE && data != null) {
-            note = data.extras?.getSerializable("add_new_note") as NoteClass
+            note = data.extras?.getParcelable<Note>("add_new_note")!!
             invisibleNote(true)
             setData(note)
         }
     }
 
-    private fun setData(note: NoteClass) {
+    private fun setData(note: Note) {
         tvNoteTitle.text = note.title
         tvTime.text = dateFormatted(note.time)
     }
