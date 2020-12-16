@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">LessonProject</string>
+    <string name="remind">Напомнить</string>
+    <string name="title">Заголовок</string>
+    <string name="input_text">Введите текст</string>
+    <string name="new_note">Новая заметка</string>
+    <string name="your_notes">Ваши заметки</string>
+
+
 </resources>

@@ -9,5 +9,7 @@ data class Note(
     var id: Int,
     var title: String,
     var description: String,
-    var time: Date
+    var time: Date,
+    var complete:Boolean,
+    var remind:Date?
 ) : Parcelable
