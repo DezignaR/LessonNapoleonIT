@@ -17,4 +17,7 @@ interface NoteGeneralView : MvpView {
 
     @AddToEndSingle
     fun showNotes(notes: List<Note>)
+
+    @OneExecution
+    fun deleteNote(note: Note)
 }

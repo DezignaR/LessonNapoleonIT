@@ -3,7 +3,9 @@ package com.example.lessonproject.feature.note_general.ui
 import android.graphics.Paint
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
 import com.example.lessonproject.Note
 import com.example.lessonproject.R
 import com.example.lessonproject.inflate
@@ -12,19 +14,26 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class NoteGeneralAdapter(
-    private val showNoteDetail: (Note) -> Unit
-) : RecyclerView.Adapter<NoteGeneralAdapter.NoteGeneralViewHolder>() {
+    private val showNoteDetail: (Note) -> Unit,
+    private val deleteNote: (Note) -> Unit
+) : ListAdapter<Note, NoteGeneralAdapter.NoteGeneralViewHolder>(
+    object : DiffUtil.ItemCallback<Note>() {
+        override fun areItemsTheSame(oldItem: Note, newItem: Note): Boolean {
+            return oldItem.title == newItem.title
+        }
 
-    private var notes: List<Note> = emptyList()
+        override fun areContentsTheSame(oldItem: Note, newItem: Note): Boolean {
+            return oldItem == newItem
+        }
+    }
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteGeneralViewHolder =
         NoteGeneralViewHolder(parent.inflate(R.layout.item_note_card))
 
     override fun onBindViewHolder(holder: NoteGeneralViewHolder, position: Int) {
-        holder.bind(notes[position])
+        holder.bind(getItem(position))
     }
-
-    override fun getItemCount(): Int = notes.size
 
     inner class NoteGeneralViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(note: Note) {
@@ -50,13 +59,9 @@ class NoteGeneralAdapter(
                     }
                 }
                 cvCardNote.setOnClickListener { showNoteDetail(note) }
+                ivDelete.setOnClickListener { deleteNote(note) }
             }
         }
-    }
-
-    fun setData(notes: List<Note>) {
-        this.notes = notes
-        notifyDataSetChanged()
     }
 
     private fun dateFormatted(date: Date): String =

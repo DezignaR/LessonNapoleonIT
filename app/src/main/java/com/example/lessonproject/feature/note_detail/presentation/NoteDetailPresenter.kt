@@ -27,14 +27,14 @@ class NoteDetailPresenter : MvpPresenter<NoteDetailView>() {
             description,
             Date(),
             false,
-            dateFormat(day, month, year, hour, minutes)
+            formatDate(day, month, year, hour, minutes)
         )
 
     fun onSwitchRemindClick(makeRemind: Boolean) {
         viewState.setRemindVisible(makeRemind)
     }
 
-    private fun dateFormat(
+    private fun formatDate(
         day: String,
         month: String,
         year: String,
@@ -61,7 +61,7 @@ class NoteDetailPresenter : MvpPresenter<NoteDetailView>() {
             !remindHourIsCorrect(hour) -> viewState.showHourIsError()
             !remindMinutesIsCorrect(minutes) -> viewState.showMinutesIsError()
             !remindDateIsCorrect(
-                dateFormat(
+                formatDate(
                     day,
                     month,
                     year,

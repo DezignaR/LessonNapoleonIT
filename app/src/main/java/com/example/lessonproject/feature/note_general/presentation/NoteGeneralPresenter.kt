@@ -13,13 +13,28 @@ class NoteGeneralPresenter : MvpPresenter<NoteGeneralView>() {
         viewState.setNotesInvisible(true)
     }
 
+    fun deleteNote(note: Note) {
+        notes.remove(note)
+        viewState.showNotes(notes.sortedByDescending { it.id })
+        if (notes.isEmpty())
+            viewState.setNotesInvisible(true)
+    }
+
     fun addNote(note: Note) {
+        note.id = getID()
         notes.add(note)
-        viewState.showNotes(notes)
+        viewState.showNotes(notes.sortedByDescending { it.id })
         viewState.setNotesInvisible(false)
     }
 
     fun addNewNoteClick() {
         viewState.addNewNote()
+    }
+
+    private fun getID(): Int {
+        return if (notes.isEmpty())
+            1
+        else
+            notes[notes.size - 1].id + 1
     }
 }

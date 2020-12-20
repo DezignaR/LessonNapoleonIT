@@ -46,7 +46,7 @@ class NoteGeneralFragment : MvpAppCompatFragment(R.layout.fragment_note), NoteGe
 
     private fun initRecyclerView() {
         generalRecycleView.layoutManager = LinearLayoutManager(context)
-        adapter = NoteGeneralAdapter(::showNoteDetail)
+        adapter = NoteGeneralAdapter(::showNoteDetail, ::deleteNote)
         generalRecycleView.adapter = adapter
     }
 
@@ -70,6 +70,10 @@ class NoteGeneralFragment : MvpAppCompatFragment(R.layout.fragment_note), NoteGe
     }
 
     override fun showNotes(notes: List<Note>) {
-        adapter.setData(notes)
+        adapter.submitList(notes)
+    }
+
+    override fun deleteNote(note: Note) {
+        presenter.deleteNote(note)
     }
 }
