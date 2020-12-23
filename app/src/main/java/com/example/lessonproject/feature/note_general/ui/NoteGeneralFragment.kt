@@ -3,19 +3,17 @@ package com.example.lessonproject.feature.note_general.ui
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.lessonproject.Note
 import com.example.lessonproject.NoteGeneralActivity
 import com.example.lessonproject.R
+import com.example.lessonproject.feature.data.NoteData
 import com.example.lessonproject.feature.note_detail.ui.NoteDetailFragment
 import com.example.lessonproject.feature.note_general.presentation.NoteGeneralPresenter
 import com.example.lessonproject.feature.note_general.presentation.NoteGeneralView
 import kotlinx.android.synthetic.main.fragment_note.*
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
-import moxy.viewstate.strategy.alias.AddToEndSingle
 
 class NoteGeneralFragment : MvpAppCompatFragment(R.layout.fragment_note), NoteGeneralView {
 
@@ -38,7 +36,7 @@ class NoteGeneralFragment : MvpAppCompatFragment(R.layout.fragment_note), NoteGe
 
         setFragmentResultListener(DETAIL_ACTIVITY_REQUEST_CODE) { requestKey, bundle ->
             if (requestKey == DETAIL_ACTIVITY_REQUEST_CODE) {
-                val result = bundle.getParcelable<Note>("bundleKey") as Note
+                val result = bundle.getParcelable<NoteData>("bundleKey") as NoteData
                 presenter.addNote(result)
             }
         }
@@ -50,7 +48,7 @@ class NoteGeneralFragment : MvpAppCompatFragment(R.layout.fragment_note), NoteGe
         generalRecycleView.adapter = adapter
     }
 
-    override fun showNoteDetail(note: Note) {
+    override fun showNoteDetail(note: NoteData) {
         (activity as NoteGeneralActivity).navigateFragment(
             NoteDetailFragment.newInstance(note),
             "NoteDetailFragment"
@@ -69,11 +67,11 @@ class NoteGeneralFragment : MvpAppCompatFragment(R.layout.fragment_note), NoteGe
         tvNoNote.isVisible = hasNotes
     }
 
-    override fun showNotes(notes: List<Note>) {
+    override fun showNotes(notes: List<NoteData>) {
         adapter.submitList(notes)
     }
 
-    override fun deleteNote(note: Note) {
+    override fun deleteNote(note: NoteData) {
         presenter.deleteNote(note)
     }
 }

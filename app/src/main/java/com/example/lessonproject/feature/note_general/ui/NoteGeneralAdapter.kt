@@ -6,23 +6,23 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.DiffUtil
-import com.example.lessonproject.Note
 import com.example.lessonproject.R
+import com.example.lessonproject.dateFormatted
+import com.example.lessonproject.feature.data.NoteData
 import com.example.lessonproject.inflate
+import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_note_card.view.*
-import java.text.SimpleDateFormat
-import java.util.*
 
 class NoteGeneralAdapter(
-    private val showNoteDetail: (Note) -> Unit,
-    private val deleteNote: (Note) -> Unit
-) : ListAdapter<Note, NoteGeneralAdapter.NoteGeneralViewHolder>(
-    object : DiffUtil.ItemCallback<Note>() {
-        override fun areItemsTheSame(oldItem: Note, newItem: Note): Boolean {
+    private val showNoteDetail: (NoteData) -> Unit,
+    private val deleteNote: (NoteData) -> Unit
+) : ListAdapter<NoteData, NoteGeneralAdapter.NoteGeneralViewHolder>(
+    object : DiffUtil.ItemCallback<NoteData>() {
+        override fun areItemsTheSame(oldItem: NoteData, newItem: NoteData): Boolean {
             return oldItem.title == newItem.title
         }
 
-        override fun areContentsTheSame(oldItem: Note, newItem: Note): Boolean {
+        override fun areContentsTheSame(oldItem: NoteData, newItem: NoteData): Boolean {
             return oldItem == newItem
         }
     }
@@ -35,14 +35,15 @@ class NoteGeneralAdapter(
         holder.bind(getItem(position))
     }
 
-    inner class NoteGeneralViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(note: Note) {
+    inner class NoteGeneralViewHolder(override val containerView: View) :
+        RecyclerView.ViewHolder(containerView), LayoutContainer {
+        fun bind(note: NoteData) {
             with(itemView) {
                 tvNoteTitle.text = note.title
-                tvTime.text = dateFormatted(note.time)
+                tvTime.text = (note.time).dateFormatted()
 
                 if (note.remind != null)
-                    tvTimeRemind.text = dateFormatted(note.remind!!)
+                    tvTimeRemind.text = (note.remind!!).dateFormatted()
 
                 rbComplete.isChecked = note.complete
                 if (note.complete) tvNoteTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
@@ -63,7 +64,4 @@ class NoteGeneralAdapter(
             }
         }
     }
-
-    private fun dateFormatted(date: Date): String =
-        SimpleDateFormat("d MMMM yyyy г. HH:mm", Locale("RU")).format(date)
 }

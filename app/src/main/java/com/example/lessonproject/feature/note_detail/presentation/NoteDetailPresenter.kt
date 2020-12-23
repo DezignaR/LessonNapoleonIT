@@ -1,6 +1,6 @@
 package com.example.lessonproject.feature.note_detail.presentation
 
-import com.example.lessonproject.Note
+import com.example.lessonproject.feature.data.NoteData
 import moxy.MvpPresenter
 import java.lang.Exception
 import java.text.SimpleDateFormat
@@ -20,14 +20,13 @@ class NoteDetailPresenter : MvpPresenter<NoteDetailView>() {
         minutes: String,
         title: String,
         description: String
-    ): Note =
-        Note(
-            1,
-            title,
-            description,
-            Date(),
-            false,
-            formatDate(day, month, year, hour, minutes)
+    ): NoteData =
+        NoteData(
+            title = title,
+            description = description,
+            time = Date(),
+            complete = false,
+            remind = formatDate(day, month, year, hour, minutes)
         )
 
     fun onSwitchRemindClick(makeRemind: Boolean) {
@@ -42,8 +41,14 @@ class NoteDetailPresenter : MvpPresenter<NoteDetailView>() {
         minutes: String,
     ): Date = SimpleDateFormat("d-MM-yyyy HH:mm").parse("$day-$month-$year $hour:$minutes")
 
-    private fun createNote(title: String, description: String): Note =
-        Note(1, title, description, Date(), false, null)
+    private fun createNote(title: String, description: String): NoteData =
+        NoteData(
+            title = title,
+            description = description,
+            time = Date(),
+            complete = false,
+            remind = null
+        )
 
     fun createIfValid(
         day: String,
