@@ -18,7 +18,8 @@ import moxy.ktx.moxyPresenter
 
 class NoteDetailFragment : MvpAppCompatFragment(R.layout.fragment_note_detail), NoteDetailView {
     companion object {
-        private const val NOTE = "NOTE"
+
+        const val NOTE = "NOTE"
 
         fun newInstance(note: NoteData? = null) = NoteDetailFragment().apply {
             arguments = Bundle().apply {
@@ -34,7 +35,7 @@ class NoteDetailFragment : MvpAppCompatFragment(R.layout.fragment_note_detail), 
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.let {
-            showNoteData(it.getParcelable(NOTE))
+            presenter.setNoteEdit(it.getParcelable(NOTE))
         }
 
         swRemind.setOnClickListener {
@@ -58,8 +59,8 @@ class NoteDetailFragment : MvpAppCompatFragment(R.layout.fragment_note_detail), 
 
     override fun setResult(note: NoteData) {
         setFragmentResult(
-            NoteGeneralFragment.DETAIL_ACTIVITY_REQUEST_CODE,
-            bundleOf("bundleKey" to note)
+            NoteGeneralFragment.REQUEST_CODE,
+            bundleOf(NOTE to note)
         )
         parentFragmentManager.popBackStack()
     }
@@ -71,6 +72,7 @@ class NoteDetailFragment : MvpAppCompatFragment(R.layout.fragment_note_detail), 
         etHoursRemind.isVisible = makeReminder
         etMinutesRemind.isVisible = makeReminder
     }
+
 
     override fun showNoteData(note: NoteData?) {
         etTitleNote.setText(note?.title)

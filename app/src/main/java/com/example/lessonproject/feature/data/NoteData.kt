@@ -18,17 +18,14 @@ data class NoteData(
 
 @Dao
 interface NoteDataDao {
-    @Insert
-    fun insertNote(vararg noteData: NoteData)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertNote(noteData: NoteData)
 
     @Delete
     fun deleteNote(noteData: NoteData)
 
-    @Query("SELECT * FROM noteData")
+    @Query("SELECT * FROM noteData ORDER BY time DESC")
     fun getAll(): List<NoteData>
-
-    @Update
-    fun updateNote(vararg noteData: NoteData)
 }
 
 class DateConverter {

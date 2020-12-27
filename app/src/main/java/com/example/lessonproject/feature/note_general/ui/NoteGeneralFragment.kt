@@ -9,6 +9,7 @@ import com.example.lessonproject.NoteGeneralActivity
 import com.example.lessonproject.R
 import com.example.lessonproject.feature.data.NoteData
 import com.example.lessonproject.feature.note_detail.ui.NoteDetailFragment
+import com.example.lessonproject.feature.note_detail.ui.NoteDetailFragment.Companion.NOTE
 import com.example.lessonproject.feature.note_general.presentation.NoteGeneralPresenter
 import com.example.lessonproject.feature.note_general.presentation.NoteGeneralView
 import kotlinx.android.synthetic.main.fragment_note.*
@@ -19,7 +20,7 @@ class NoteGeneralFragment : MvpAppCompatFragment(R.layout.fragment_note), NoteGe
 
     companion object {
 
-        const val DETAIL_ACTIVITY_REQUEST_CODE = "1"
+        const val REQUEST_CODE = "1"
     }
 
     lateinit var adapter: NoteGeneralAdapter
@@ -34,9 +35,9 @@ class NoteGeneralFragment : MvpAppCompatFragment(R.layout.fragment_note), NoteGe
             presenter.addNewNoteClick()
         }
 
-        setFragmentResultListener(DETAIL_ACTIVITY_REQUEST_CODE) { requestKey, bundle ->
-            if (requestKey == DETAIL_ACTIVITY_REQUEST_CODE) {
-                val result = bundle.getParcelable<NoteData>("bundleKey") as NoteData
+        setFragmentResultListener(REQUEST_CODE) { requestKey, bundle ->
+            if (requestKey == REQUEST_CODE) {
+                val result = bundle.getParcelable<NoteData>(NOTE) as NoteData
                 presenter.addNote(result)
             }
         }
@@ -74,4 +75,5 @@ class NoteGeneralFragment : MvpAppCompatFragment(R.layout.fragment_note), NoteGe
     override fun deleteNote(note: NoteData) {
         presenter.deleteNote(note)
     }
+
 }

@@ -2,14 +2,18 @@ package com.example.lessonproject.feature.note_general.presentation
 
 import com.example.lessonproject.NoteGeneralActivity
 import com.example.lessonproject.feature.data.NoteData
+import kotlinx.coroutines.launch
 import moxy.MvpPresenter
+import moxy.presenterScope
 
 class NoteGeneralPresenter : MvpPresenter<NoteGeneralView>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        if (getNotes().isEmpty()) viewState.setNotesInvisible(true)
-        else viewState.showNotes(getNotes())
+        val notes = getNotes()
+        if (notes.isEmpty()) viewState.setNotesInvisible(true)
+        else viewState.showNotes(notes)
+        presenterScope.launch { }
     }
 
     fun deleteNote(note: NoteData) {
@@ -18,11 +22,6 @@ class NoteGeneralPresenter : MvpPresenter<NoteGeneralView>() {
         viewState.showNotes(notes)
         if (notes.isEmpty())
             viewState.setNotesInvisible(true)
-    }
-
-    fun updateNote(note: NoteData){
-        NoteGeneralActivity.INSTANCE.database.noteDataDao().updateNote(note)
-        viewState.showNotes(getNotes())
     }
 
     fun addNote(note: NoteData) {
@@ -37,4 +36,6 @@ class NoteGeneralPresenter : MvpPresenter<NoteGeneralView>() {
     fun addNewNoteClick() {
         viewState.addNewNote()
     }
+
+
 }
