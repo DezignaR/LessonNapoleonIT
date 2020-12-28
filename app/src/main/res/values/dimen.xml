@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="match_constraints">0dp</dimen>
+    <dimen name="delimiter_height">1dp</dimen>
+    <dimen name="toolbar_height">64dp</dimen>
+
+    <dimen name="space_little">4dp</dimen>
+    <dimen name="space_small">12dp</dimen>
+    <dimen name="space_medium">16dp</dimen>
+    <dimen name="space_large">24dp</dimen>
+
+    <dimen name="font_size_large">27sp</dimen>
+    <dimen name="font_size_medium">18sp</dimen>
+    <dimen name="font_size_small">12sp</dimen>
+
+</resources>

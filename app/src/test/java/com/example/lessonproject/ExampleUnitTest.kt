@@ -1,6 +1,8 @@
 package com.example.lessonproject
 
 import org.junit.Test
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -9,18 +11,24 @@ import org.junit.Test
  */
 class ExampleUnitTest {
 
-    private val toyota = CarClass("Toyota", "Crown",220)
-    private val nissan = CarClass("Nissan", "Fuga",210)
-    private val porsche = CarClass("Porsche", "911",320)
-
-    private var myCarCollection = listOf(toyota, nissan, porsche)
 
 
     @Test
     fun start() {
 
-        println(myCarCollection.sort())
+      println(myCarCollection.sort())
     }
 
-    private fun List<CarClass>.sort(): List<CarClass> = this.sortedBy { it.speed }
+    private val simpleDateFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss", Locale("ru"))
+
+    @Test
+    fun testDate() {
+        val time = 1560507488
+        println(getDateString(time)) // 14 June 2019, 13:18:08
+    }
+
+    private fun getDateString(time: Long) : String = simpleDateFormat.format(time * 1000L)
+
+    private fun getDateString(time: Int) : String = simpleDateFormat.format(time * 1000L)
+
 }
