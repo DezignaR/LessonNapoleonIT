@@ -61,12 +61,10 @@ class NoteGeneralPresenter @Inject constructor(
 
     private suspend fun getNotesRetrofit(): List<Note> = getNotesUseCase()
 
-    private fun getNotes(): List<Note> =
-        database.noteDataDao().getAll()
+//    private fun getNotes(): List<Note> =
+//        database.noteDataDao().getAll()
 
     fun addNewNoteClick() {
         viewState.addNewNote()
     }
-
-
 }

@@ -5,8 +5,6 @@ import com.example.lessonproject.feature.data.Note
 import javax.inject.Inject
 
 
-class GetNotesUseCase @Inject constructor(
-    private val noteApi: NoteApi
-) {
+class GetNotesUseCase @Inject constructor(private val noteApi: NoteApi) {
     suspend operator fun invoke(): List<Note> = noteApi.getNotes()
 }

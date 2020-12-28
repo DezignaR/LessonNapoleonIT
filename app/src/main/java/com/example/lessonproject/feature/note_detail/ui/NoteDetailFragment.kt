@@ -64,7 +64,6 @@ class NoteDetailFragment : BaseFragment(R.layout.fragment_note_detail), NoteDeta
         }
     }
 
-
     override fun back() {
         setFragmentResult(
             NoteGeneralFragment.REQUEST_CODE,
@@ -80,7 +79,6 @@ class NoteDetailFragment : BaseFragment(R.layout.fragment_note_detail), NoteDeta
         etHoursRemind.isVisible = makeReminder
         etMinutesRemind.isVisible = makeReminder
     }
-
 
     override fun showNoteData(note: Note?) {
         etTitleNote.setText(note?.title)
