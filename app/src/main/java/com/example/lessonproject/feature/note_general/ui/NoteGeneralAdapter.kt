@@ -3,26 +3,26 @@ package com.example.lessonproject.feature.note_general.ui
 import android.graphics.Paint
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.DiffUtil
 import com.example.lessonproject.R
 import com.example.lessonproject.dateFormatted
-import com.example.lessonproject.feature.data.NoteData
+import com.example.lessonproject.feature.data.Note
 import com.example.lessonproject.inflate
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_note_card.view.*
 
 class NoteGeneralAdapter(
-    private val showNoteDetail: (NoteData) -> Unit,
-    private val deleteNote: (NoteData) -> Unit
-) : ListAdapter<NoteData, NoteGeneralAdapter.NoteGeneralViewHolder>(
-    object : DiffUtil.ItemCallback<NoteData>() {
-        override fun areItemsTheSame(oldItem: NoteData, newItem: NoteData): Boolean {
+    private val showNoteDetail: (Note) -> Unit,
+    private val deleteNote: (Note) -> Unit
+) : ListAdapter<Note, NoteGeneralAdapter.NoteGeneralViewHolder>(
+    object : DiffUtil.ItemCallback<Note>() {
+        override fun areItemsTheSame(oldItem: Note, newItem: Note): Boolean {
             return oldItem.title == newItem.title
         }
 
-        override fun areContentsTheSame(oldItem: NoteData, newItem: NoteData): Boolean {
+        override fun areContentsTheSame(oldItem: Note, newItem: Note): Boolean {
             return oldItem == newItem
         }
     }
@@ -37,7 +37,7 @@ class NoteGeneralAdapter(
 
     inner class NoteGeneralViewHolder(override val containerView: View) :
         RecyclerView.ViewHolder(containerView), LayoutContainer {
-        fun bind(note: NoteData) {
+        fun bind(note: Note) {
             with(itemView) {
                 tvNoteTitle.text = note.title
                 tvTime.text = (note.time).dateFormatted()

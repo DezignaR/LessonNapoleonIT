@@ -1,39 +1,37 @@
 package com.example.lessonproject.feature.note_detail.presentation
 
-import com.example.lessonproject.feature.data.NoteData
+import com.example.lessonproject.domain.AddNoteUseCase
+import com.example.lessonproject.feature.data.Note
+import com.example.lessonproject.feature.data.NoteDB
+import kotlinx.coroutines.launch
 import moxy.MvpPresenter
-import java.lang.Exception
+import moxy.presenterScope
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class NoteDetailPresenter : MvpPresenter<NoteDetailView>() {
+class NoteDetailPresenter @Inject constructor(
+    private val database: NoteDB,
+    private val postNoteUseCase: AddNoteUseCase
+) :
+    MvpPresenter<NoteDetailView>() {
 
-    fun onAddClick(title: String, description: String) {
-        viewState.setResult(createNote(title, description))
+    private var noteEdit: Note? = null
+
+    fun onAddClick(title: String, description: String, remind: Date?) {
+        val note = createNote(title, description, remind)
+        presenterScope.launch {
+            database.noteDataDao().insertNote(note)
+            postNoteUseCase(note)
+            viewState.back()
+        }
     }
-
-    private fun onAddWithRemindClick(
-        day: String,
-        month: String,
-        year: String,
-        hour: String,
-        minutes: String,
-        title: String,
-        description: String
-    ): NoteData =
-        NoteData(
-            title = title,
-            description = description,
-            time = Date(),
-            complete = false,
-            remind = formatDate(day, month, year, hour, minutes)
-        )
 
     fun onSwitchRemindClick(makeRemind: Boolean) {
         viewState.setRemindVisible(makeRemind)
     }
 
-    private fun formatDate(
+    private fun formatStringToDate(
         day: String,
         month: String,
         year: String,
@@ -41,14 +39,36 @@ class NoteDetailPresenter : MvpPresenter<NoteDetailView>() {
         minutes: String,
     ): Date = SimpleDateFormat("d-MM-yyyy HH:mm").parse("$day-$month-$year $hour:$minutes")
 
-    private fun createNote(title: String, description: String): NoteData =
-        NoteData(
+    private fun createNote(title: String, description: String, remind: Date?): Note =
+        if (noteEdit == null) Note(
+            //serverId = null,
             title = title,
             description = description,
             time = Date(),
             complete = false,
-            remind = null
+            remind = remind
+        ) else Note(
+            id = noteEdit!!.id,
+            // serverId = null,
+            title = title,
+            description = description,
+            time = Date(),
+            complete = false,
+            remind = remind
         )
+
+    fun setNoteEdit(note: Note?) {
+        if (note != null) {
+            noteEdit = note
+            if (noteEdit!!.remind == null)
+                viewState.showNoteData(noteEdit)
+            else {
+                onSwitchRemindClick(true)
+
+                viewState.showNoteData(noteEdit)
+            }
+        }
+    }
 
     fun createIfValid(
         day: String,
@@ -66,7 +86,7 @@ class NoteDetailPresenter : MvpPresenter<NoteDetailView>() {
             !remindHourIsCorrect(hour) -> viewState.showHourIsError()
             !remindMinutesIsCorrect(minutes) -> viewState.showMinutesIsError()
             !remindDateIsCorrect(
-                formatDate(
+                formatStringToDate(
                     day,
                     month,
                     year,
@@ -75,15 +95,13 @@ class NoteDetailPresenter : MvpPresenter<NoteDetailView>() {
                 )
             ) -> viewState.showDateIsError()
             else -> {
-                viewState.setResult(
-                    onAddWithRemindClick(
+                onAddClick(
+                    title, description, formatStringToDate(
                         day,
                         month,
                         year,
                         hour,
-                        minutes,
-                        title,
-                        description
+                        minutes
                     )
                 )
             }

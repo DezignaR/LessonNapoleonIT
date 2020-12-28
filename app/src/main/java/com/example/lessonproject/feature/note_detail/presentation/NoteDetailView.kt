@@ -1,16 +1,16 @@
 package com.example.lessonproject.feature.note_detail.presentation
 
-import com.example.lessonproject.feature.data.NoteData
+import com.example.lessonproject.feature.data.Note
 import moxy.MvpView
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.Skip
 
 interface NoteDetailView : MvpView {
     @AddToEndSingle
-    fun setResult(note: NoteData)
+    fun back()
 
     @AddToEndSingle
-    fun showNoteData(note: NoteData?)
+    fun showNoteData(note: Note?)
 
     @AddToEndSingle
     fun setRemindVisible(makeReminder: Boolean)
