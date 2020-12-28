@@ -1,51 +1,35 @@
 package com.example.lessonproject.feature.note_detail.presentation
 
-import com.example.lessonproject.feature.data.NoteData
+import com.example.lessonproject.domain.AddNoteUseCase
+import com.example.lessonproject.feature.data.Note
+import com.example.lessonproject.feature.data.NoteDB
+import kotlinx.coroutines.launch
 import moxy.MvpPresenter
+import moxy.presenterScope
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class NoteDetailPresenter : MvpPresenter<NoteDetailView>() {
+class NoteDetailPresenter @Inject constructor(
+    private val database: NoteDB,
+    private val postNoteUseCase: AddNoteUseCase
+) :
+    MvpPresenter<NoteDetailView>() {
 
-    private var noteEdit: NoteData? = null
+    private var noteEdit: Note? = null
 
-    /**
-     * Добавления заметки без напоминания
-     **/
-
-    fun onAddClick(title: String, description: String) {
-        viewState.setResult(createNote(title, description, null))
+    fun onAddClick(title: String, description: String, remind: Date?) {
+        val note = createNote(title, description, remind)
+        presenterScope.launch {
+            database.noteDataDao().insertNote(note)
+            postNoteUseCase(note)
+            viewState.back()
+        }
     }
-
-    /**
-     * Добавления заметки с напоминанем
-     **/
-
-    private fun onAddWithRemindClick(
-        day: String,
-        month: String,
-        year: String,
-        hour: String,
-        minutes: String,
-        title: String,
-        description: String
-    ): NoteData = createNote(
-        title,
-        description,
-        formatStringToDate(day, month, year, hour, minutes)
-    )
-
-    /**
-     * Сделать поле ввода напоминания видимым
-     * */
 
     fun onSwitchRemindClick(makeRemind: Boolean) {
         viewState.setRemindVisible(makeRemind)
     }
-
-    /**
-     * Формат из Строки -> Дату
-     **/
 
     private fun formatStringToDate(
         day: String,
@@ -55,19 +39,17 @@ class NoteDetailPresenter : MvpPresenter<NoteDetailView>() {
         minutes: String,
     ): Date = SimpleDateFormat("d-MM-yyyy HH:mm").parse("$day-$month-$year $hour:$minutes")
 
-    /**
-     * Создание новой заметки или отредактированной.
-     **/
-
-    private fun createNote(title: String, description: String, remind: Date?): NoteData =
-        if (noteEdit == null) NoteData(
+    private fun createNote(title: String, description: String, remind: Date?): Note =
+        if (noteEdit == null) Note(
+            //serverId = null,
             title = title,
             description = description,
             time = Date(),
             complete = false,
             remind = remind
-        ) else NoteData(
+        ) else Note(
             id = noteEdit!!.id,
+            // serverId = null,
             title = title,
             description = description,
             time = Date(),
@@ -75,25 +57,18 @@ class NoteDetailPresenter : MvpPresenter<NoteDetailView>() {
             remind = remind
         )
 
-    /**
-     *Сохранения заметки для редактирования и передача в вью
-     * */
-
-    fun setNoteEdit(noteData: NoteData?) {
-        if (noteData != null) {
-            noteEdit = noteData
+    fun setNoteEdit(note: Note?) {
+        if (note != null) {
+            noteEdit = note
             if (noteEdit!!.remind == null)
                 viewState.showNoteData(noteEdit)
-            else { onSwitchRemindClick(true)
+            else {
+                onSwitchRemindClick(true)
 
                 viewState.showNoteData(noteEdit)
             }
         }
     }
-
-    /**
-     *Валидация ввода времени напоминания, и если все верно передача в фуенкцию создания
-     * */
 
     fun createIfValid(
         day: String,
@@ -120,24 +95,19 @@ class NoteDetailPresenter : MvpPresenter<NoteDetailView>() {
                 )
             ) -> viewState.showDateIsError()
             else -> {
-                viewState.setResult(
-                    onAddWithRemindClick(
+                onAddClick(
+                    title, description, formatStringToDate(
                         day,
                         month,
                         year,
                         hour,
-                        minutes,
-                        title,
-                        description
+                        minutes
                     )
                 )
             }
         }
     }
 
-    /**
-     * Функции валидации
-     * */
     private fun remindDateIsCorrect(remindDate: Date): Boolean = remindDate > Date()
 
     private fun remindDayIsCorrect(remindDay: String): Boolean {
@@ -195,6 +165,4 @@ class NoteDetailPresenter : MvpPresenter<NoteDetailView>() {
             false
         }
     }
-
-
 }

@@ -1,27 +1,28 @@
 package com.example.lessonproject.feature.note_detail.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResult
+import com.example.lessonproject.BaseFragment
 import com.example.lessonproject.R
-import com.example.lessonproject.feature.data.NoteData
+import com.example.lessonproject.feature.data.Note
 import com.example.lessonproject.feature.note_detail.presentation.NoteDetailPresenter
 import com.example.lessonproject.feature.note_detail.presentation.NoteDetailView
 import com.example.lessonproject.feature.note_general.ui.NoteGeneralFragment
 import kotlinx.android.synthetic.main.fragment_note_detail.*
-import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
+import javax.inject.Inject
+import javax.inject.Provider
 
-class NoteDetailFragment : MvpAppCompatFragment(R.layout.fragment_note_detail), NoteDetailView {
+class NoteDetailFragment : BaseFragment(R.layout.fragment_note_detail), NoteDetailView {
     companion object {
 
         const val NOTE = "NOTE"
 
-        fun newInstance(note: NoteData? = null) = NoteDetailFragment().apply {
+        fun newInstance(note: Note? = null) = NoteDetailFragment().apply {
             arguments = Bundle().apply {
                 if (note != null)
                     putParcelable(NOTE, note)
@@ -29,7 +30,9 @@ class NoteDetailFragment : MvpAppCompatFragment(R.layout.fragment_note_detail), 
         }
     }
 
-    private val presenter by moxyPresenter { NoteDetailPresenter() }
+    @Inject
+    lateinit var presenterProvider: Provider<NoteDetailPresenter>
+    private val presenter by moxyPresenter { presenterProvider.get() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,14 +56,19 @@ class NoteDetailFragment : MvpAppCompatFragment(R.layout.fragment_note_detail), 
                     etTitleNote.text.toString(),
                     etDescription.text.toString()
                 )
-            else presenter.onAddClick(etTitleNote.text.toString(), etDescription.text.toString())
+            else presenter.onAddClick(
+                etTitleNote.text.toString(),
+                etDescription.text.toString(),
+                null
+            )
         }
     }
 
-    override fun setResult(note: NoteData) {
+
+    override fun back() {
         setFragmentResult(
             NoteGeneralFragment.REQUEST_CODE,
-            bundleOf(NOTE to note)
+            bundleOf()
         )
         parentFragmentManager.popBackStack()
     }
@@ -74,7 +82,7 @@ class NoteDetailFragment : MvpAppCompatFragment(R.layout.fragment_note_detail), 
     }
 
 
-    override fun showNoteData(note: NoteData?) {
+    override fun showNoteData(note: Note?) {
         etTitleNote.setText(note?.title)
         etDescription.setText(note?.description)
     }
